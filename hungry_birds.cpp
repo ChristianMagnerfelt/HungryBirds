@@ -33,7 +33,7 @@ void * parentBird(void * param);
 std::vector<int> g_dish;
 sem_t mutex;
 
-/*
+/*!
  *	\params	argv	{ program name } { number of baby birds } { number of worms }
  */
 int main(int argc, const char * argv[])
@@ -99,8 +99,17 @@ int main(int argc, const char * argv[])
 	}
 	return 0;
 }
-/*
- *	\brief	Fills dish with worms
+/*!
+ *	\brief			Fills dish with worms
+ *	\description	Fairness: Note that only a limited number of birds can access
+ *					the dish at one time. If the scheduling of the waiting threads 
+ *					in the semaphore is not fair, it may mean that some birds may 
+ *					not end up accessing the dish at all. 
+ *					Of course we can influence the scheduling policy of the OS
+ *					by setting the scope with the pthreads API. However this does not 
+ *					change how the semaphores schedule its threads. This is implementation 
+ *					dependent. In order to acheive true fairness the semaphore would 
+ *					have to implement some kind of FIFO queue.
  */
 void * parentBird(void * param)
 {
@@ -127,8 +136,9 @@ void * parentBird(void * param)
 	}
 	return 0;
 }
-/*
+/*!
  *	\brief	Eats worms from dish
+ *
  */
 void * babyBird(void * param)
 {
